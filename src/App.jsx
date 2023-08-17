@@ -6,7 +6,7 @@ import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Typin
 const API_KEY = import.meta.env.VITE_OPENAI_KEY;
 
 const systemMessage = {
-  "role": "system", "content": "Explain things like you're talking to a software professional with 2 years of experience."
+  "role": "system", "content": "Assume that you are a fashion Expert and updated with the latest trends. You are a fashion stylist and you are helping a client to choose for various occasions. You are chatting with the client to understand her requirements and to suggest a dress for him/her. You must also ask him/her for their fashion preferences before suggestion them their looks. Also give answers only in list of points. Don't just give direct answers ask for more clarity about person's likes or dislike and also ask them their gender and budget if they do not give any information about it also ask them about their age and occasion for which they want to dress up. Make sure you don't response with more than 2 paragraphs. Suggest outfits "
 }
 
 function App() {
@@ -19,7 +19,17 @@ function App() {
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
-  const [location, setLocation] = useState(null);
+  const sendFirstMessage = async (location) => {
+    const newMessage = {
+      message: `I am from ${location}, I will ask you some question for my fashion choices. Can you help me based on my location?`,
+      direction: 'outgoing',
+      sender: "user"
+    };
+    const newMessages = [...messages, newMessage];
+    setMessages(newMessages);
+    setIsTyping(true);
+    await processMessageToFashionGPT(newMessages);
+  }
 
   useEffect(() => {
     const getLocation = () => {
@@ -31,8 +41,7 @@ function App() {
 
           let myLocation = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${import.meta.env.VITE_GMAPS_API_KEY}`);
           myLocation = await myLocation.json();
-          console.log(myLocation.plus_code.compound_code.split(" ")[1].split(",")[0]);
-          setLocation(myLocation);
+          sendFirstMessage(myLocation.plus_code.compound_code.split(" ")[1].split(",")[0]);
         });
       }
     }
@@ -83,7 +92,6 @@ function App() {
     }).then((data) => {
       return data.json();
     }).then((data) => {
-      console.log(data);
       setMessages([...chatMessages, {
         message: data.choices[0].message.content,
         sender: "FashionGPT"
@@ -103,7 +111,6 @@ function App() {
               typingIndicator={isTyping ? <TypingIndicator content="FashionGPT is typing" /> : null}
             >
               {messages.map((message, i) => {
-                console.log(message)
                 return <Message key={i} model={message} />
               })}
             </MessageList>
