@@ -1,6 +1,6 @@
 ## Fashion-GPT 👕👖
 
-Website Link - https://kaleidoscopic-puppy-10f194.netlify.app
+Website Link - https://fashion-gpt.netlify.app/
 
 A Chatbot which can help users to find clothes they want to buy using natural language.
 
