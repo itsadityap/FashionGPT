@@ -103,6 +103,7 @@ function App() {
 
   return (
     <div className="App">
+      <div style={{ position:"relative", height: "750px", width: "650px"  }}>
         <MainContainer>
           <ChatContainer
           >       
@@ -117,6 +118,7 @@ function App() {
             <MessageInput placeholder="Type message here" onSend={handleSend} />        
           </ChatContainer>
         </MainContainer>
+      </div>
     </div>
   )
 }
